@@ -1,10 +1,9 @@
-#to do list:
-#generate a scoring system for all 7 moves 
-#which checks if its valid eg that column is full 
-#.copy function to create new board to analyse 
-#minimax algorithm to work(try on a diffrent file)
+#git add Maingame.py
+#git comment -m "comment"
+#git push -u origin maaster 
 import random
 import copy 
+import math 
 """Generates The Board"""
 def board(row):
     board1=[]
@@ -112,82 +111,17 @@ def user_input2(gameboard):
             pass
         else:
             pass
+        for i in range(1,8):
+            if input2 == i:
+                column1 = []
+                for h in range(0,6):
+                    column1.append(gameboard[h][0])
+                if 0 not in column1:
+                    print("Column" + i + "Full Select, Please Select Another Column")
+                else:
+                    return input2
+                    break
        
-        if input2 ==1:
-            column1 =[]
-            for i in range(0,6):
-                column1.append(gameboard[i][0])
-            if 0 not in column1:
-                print("Column 1 Full Select, Please Select Another Column")
-            else:
-                return input2
-                break
-            
-        if input2 == 2:
-            column2 = []
-            for i in range(0,6):
-                column2.append(gameboard[i][1])
-            if 0 not in column2:
-                print("Column 2 Full Select, Please Select Another Column")
-                pass
-            else:
-                return input2
-                break
-            
-        if input2 == 3:
-            column3 = []
-            for i in range(0,6):
-                column3.append(gameboard[i][2])
-            if 0 not in column3:
-                print("Column 3 Full Select, Please Select Another Column")
-                pass
-            else:
-                return input2
-                break
-            
-        if input2 == 4:
-            column4 = []
-            for i in range(0,6):
-                column4.append(gameboard[i][3])
-            if 0 not in column4:
-                print("Column 4 Full Select, Please Select Another Column")
-                pass
-            else:
-                return input2
-                break
-            
-        if input2 == 5:
-            column5 = []
-            for i in range(0,6):
-                column5.append(gameboard[i][4])
-            if 0 not in column5:
-                print("Column 5 Full Select, Please Select Another Column")
-                pass
-            else:
-                return input2
-                break
-            
-        if input2 == 6:
-            column6 = []
-            for i in range(0,6):
-                column6.append(gameboard[i][5])
-            if 0 not in column6:
-                print("Column 6 Full Select, Please Select Another Column")
-                pass
-            else:
-                return input2
-                break
-        
-        if input2 == 7:
-            column7 = []
-            for i in range(0,6):
-                column7.append(gameboard[i][6])
-            if 0 not in column7:
-                print("Column 7 Full Select, Please Select Another Column")
-                pass
-            else:
-                return input2
-                break
             
         
 """ Board Updaters """      
@@ -350,10 +284,12 @@ def freespace(gameboard):
     
     freespace = [a,b,c,d,e,f,g]
     return freespace
-
+def freespace2(freespace):
+    for x,y in enumerate(freespace):
+        
 def scoring_position(gameboard,freespace):
     copy_board = copy.deepcopy(gameboard)
-    
+    printboard(copy_board)
     
     
     score = 0
@@ -363,34 +299,512 @@ def scoring_position(gameboard,freespace):
         column_cord = 0
         row_cord = 0
         copy_board[y][x] = 2
+        column_cord = y 
+        row_cord = x 
         print(y,x) 
-        for a in range(0,4):# 4 in a row (horizontal)
-            if copy_board[y][a] == 2 and copy_board[y][a+1] == 2 and copy_board[y][a+2] == 2  and copy_board[y][a+3] == 2:
-                score = 100 
-                print(score)
-                column_cord = y
+        
+        #defending against diagonals 4 in a row ne
+        if y < 3 and x > 2:
+            if copy_board[y+1][x-1] == 1 and copy_board[y+2][x-2] == 1 and copy_board[y+3][x-3] == 1:
+                score += 500
+                column_cord = y 
                 row_cord = x
-                break
-        for b in range(0,5): # 3 in a row (horizontal)
-            if copy_board[y][b] == 2 and copy_board[y][b+1] == 2 and copy_board[y][b+2] == 2:
-                if score == 100:
-                    score = score 
-                else:
-                    score = 50 
+            
+        
+        #defending against diaganols 4 in a row  nw
+        if y < 3 and x <4:
+            if copy_board[y+1][x+1] == 1 and copy_board[y+2][x+2] == 1 and copy_board[y+3][x+3] == 1:
+                score += 500
+                column_cord = y 
+                row_cord = x
+            
+        
+        if y < 3: #defending against vertical 4 in a row 
+            if copy_board[y+1][x] == 1 and copy_board[y+2][x] == 1 and copy_board[y+3][x] == 1:
+                score += 500
+                column_cord = y 
+                row_cord = x
+        
+        #2 in a row horizontal 
+        if x == 0:
+            #defense
+            if copy_board[y][x+1] == 1 and copy_board[y][x+2] == 1 and copy_board[y][x+3] == 1:
+                score += 500
+                column_cord = y 
+                row_cord = x
+            #attacking 
+            if copy_board[y][x] == 2 and copy_board[y][x+1] == 2:#2
+                score += 5 
+                column_cord = y 
+                row_cord = x
+            
+            if copy_board[y][x] == 2 and copy_board[y][x+1] == 2 and copy_board[y][x+2] == 2:#3
+                score += 25 
+                column_cord = y 
+                row_cord = x
+            
+            if copy_board[y][x] == 2 and copy_board[y][x+1] == 2 and copy_board[y][x+2] == 2 and copy_board[y][x+3] == 2: #4 
+                score += 1000
+                column_cord = y 
+                row_cord = x
+                
+            
+        if x == 1:
+            #defending
+            if copy_board[y][x+1] == 1 and copy_board[y][x+2] == 1 and copy_board[y][x+3] == 1:
+                score += 500 
+                column_cord = y 
+                row_cord = x 
+            if copy_board[y][x-1] == 1 and copy_board[y][x+1] == 1 and copy_board[y][x+2] == 1:
+                score += 500 
+                column_cord = y 
+                row_cord = x 
+            #attacking
+            if copy_board[y][x] == 2 and copy_board[y][x-1] == 2: #2 
+                score += 5 
+                column_cord = y 
+                row_cord = x
+            
+           
+            if copy_board[y][x] == 2 and copy_board[y][x+1] == 2: #2 
+                score += 5 
+                column_cord = y 
+                row_cord = x
+                
+            
+            if copy_board[y][x] == 2 and copy_board[y][x-1] == 2 and copy_board[y][x+1] == 2:#3
+                score += 25 
+                column_cord = y 
+                row_cord = x
+            
+            if copy_board[y][x] == 2 and copy_board[y][x+1] == 2 and copy_board[y][x+2] == 2:#3
+                score += 25 
+                column_cord = y 
+                row_cord = x    
+            
+            if copy_board[y][x] == 2 and copy_board[y][x-1] == 2 and copy_board[y][x+1] == 2 and copy_board[y][x+2] == 2:#4
+                score += 1000 
+                column_cord = y 
+                row_cord = x  
+            
+            if copy_board[y][x] == 2 and copy_board[y][x+1] == 2 and copy_board[y][x+2] == 2 and copy_board[y][x+3] == 2:#4
+                score += 1000 
+                column_cord = y 
+                row_cord = x  
+        
+        if x ==2:
+            #defending
+            if copy_board[y][x-2] == 1 and copy_board[y][x-1] == 1 and copy_board[y][x+1] == 1:
+                score += 500
+                column_cord = y 
+                row_cord = x
+            if copy_board[y][x-1] == 1 and copy_board[y][x+1] == 1 and copy_board[y][x+2] == 1:
+                score += 500 
+                column_cord = y 
+                row_cord = x
+            if copy_board[y][x+1] == 1 and copy_board[y][x+2] == 1 and copy_board[y][x+3] == 1:
+                score += 500 
+                column_cord = y 
+                row_cord = x
+            #attacking
+            if copy_board[y][x] == 2 and copy_board[y][x-1] == 2: #2 
+                score += 5 
+                column_cord = y 
+                row_cord = x
+            
+           
+            if copy_board[y][x] == 2 and copy_board[y][x+1] == 2: #2 
+                score += 5 
+                column_cord = y 
+                row_cord = x
+           
+            if copy_board[y][x] == 2 and copy_board[y][x-1] == 2 and copy_board[y][x-2] == 2:#3
+                score += 25 
+                column_cord = y 
+                row_cord = x
+            
+            if copy_board[y][x] == 2 and copy_board[y][x-1] == 2 and copy_board[y][x+1] == 2:#3
+                score += 25 
+                column_cord = y 
+                row_cord = x
+                
+            if copy_board[y][x] == 2 and copy_board[y][x+1] == 2 and copy_board[y][x+2] == 2:#3
+                score += 25 
+                column_cord = y 
+                row_cord = x
+            
+            if copy_board[y][x] == 2 and copy_board[y][x-2] == 2 and copy_board[y][x-1] == 2 and copy_board[y][x+1] == 2:#4
+                score += 1000 
+                column_cord = y 
+                row_cord = x
+            
+            if copy_board[y][x] == 2 and copy_board[y][x-1] == 2 and copy_board[y][x+1] == 2 and copy_board[y][x+2] == 2:#4
+                score += 1000
+                column_cord = y 
+                row_cord = x
+            
+            if copy_board[y][x] == 2 and copy_board[y][x+1] == 2 and copy_board[y][x+2] == 2 and copy_board[y][x+3] == 2:#4
+                score += 1000 
+                column_cord = y 
+                row_cord = x
+        
+        if x == 3:
+            #defending
+            if copy_board[y][x-3] == 1 and copy_board[y][x-2] == 1 and copy_board[y][x-1] == 1:
+                score += 500
+                column_cord = y 
+                row_cord = x
+            if copy_board[y][x-2] == 1 and copy_board[y][x-1] == 1 and copy_board[y][x+1] == 1:
+                score += 500 
+                column_cord = y 
+                row_cord = x
+            if copy_board[y][x-1] == 1 and copy_board[y][x+1] == 1 and copy_board[y][x+2] == 1:
+                score += 500 
+                column_cord = y 
+                row_cord = x
+            if copy_board[y][x+1] == 1 and copy_board[y][x+2] == 1 and copy_board[y][x+3] == 1:
+                score += 500 
+                column_cord = y 
+                row_cord = x    
+            #attacking
+            if copy_board[y][x] == 2 and copy_board[y][x-1] == 2: #2 
+                score += 5 
+                column_cord = y 
+                row_cord = x
+            
+           
+            if copy_board[y][x] == 2 and copy_board[y][x+1] == 2: #2 
+                score += 5 
+                column_cord = y 
+                row_cord = x
+            
+            if copy_board[y][x] == 2 and copy_board[y][x-1] == 2 and copy_board[y][x-2] == 2:#3
+                score += 25 
+                column_cord = y 
+                row_cord = x
+            
+            if copy_board[y][x] == 2 and copy_board[y][x-1] == 2 and copy_board[y][x+1] == 2:#3
+                score += 25 
+                column_cord = y 
+                row_cord = x
+                
+            if copy_board[y][x] == 2 and copy_board[y][x+1] == 2 and copy_board[y][x+2] == 2:#3
+                score += 25 
+                column_cord = y 
+                row_cord = x
+            
+            if copy_board[y][x] == 2 and copy_board[y][x-2] == 2 and copy_board[y][x-1] == 2 and copy_board[y][x+1] == 2:#4
+                score += 1000 
+                column_cord = y 
+                row_cord = x
+            
+            if copy_board[y][x] == 2 and copy_board[y][x-1] == 2 and copy_board[y][x+1] == 2 and copy_board[y][x+2] == 2:#4
+                score += 1000 
+                column_cord = y 
+                row_cord = x
+            
+            if copy_board[y][x] == 2 and copy_board[y][x+1] == 2 and copy_board[y][x+2] == 2 and copy_board[y][x+3] == 2:#4
+                score += 1000 
+                column_cord = y 
+                row_cord = x
+            
+            if copy_board[y][x] == 2 and copy_board[y][x-2] == 2 and copy_board[y][x-1] == 2 and copy_board[y][x-3] == 2:#4
+                score += 1000 
+                column_cord = y 
+                row_cord = x
+            
+        if x == 4:
+            #defending
+            if copy_board[y][x-3] == 1 and copy_board[y][x-2] == 1 and copy_board[y][x-1] == 1:
+                score += 500 
+                column_cord = y 
+                row_cord = x
+            if copy_board[y][x-2] == 1 and copy_board[y][x-1] == 1 and copy_board[y][x+1] == 1:
+                score += 500 
+                column_cord = y 
+                row_cord = x
+            if copy_board[y][x-1] == 1 and copy_board[y][x+1] == 1 and copy_board[y][x+2] == 1:
+                score += 500 
+                column_cord = y 
+                row_cord = x
+            #attacking 
+            if copy_board[y][x] == 2 and copy_board[y][x-1] == 2: #2 
+                score += 5 
+                column_cord = y 
+                row_cord = x
+            
+           
+            if copy_board[y][x] == 2 and copy_board[y][x+1] == 2: #2 
+                score += 5 
+                column_cord = y 
+                row_cord = x
+    
+            if copy_board[y][x] == 2 and copy_board[y][x-1] == 2 and copy_board[y][x-2] == 2:#3
+                score += 25 
+                column_cord = y 
+                row_cord = x
+            
+            if copy_board[y][x] == 2 and copy_board[y][x-1] == 2 and copy_board[y][x+1] == 2:#3
+                score += 25 
+                column_cord = y 
+                row_cord = x
+                
+            if copy_board[y][x] == 2 and copy_board[y][x+1] == 2 and copy_board[y][x+2] == 2:#3
+                score += 25 
+                column_cord = y 
+                row_cord = x
+            
+            if copy_board[y][x] == 2 and copy_board[y][x-2] == 2 and copy_board[y][x-1] == 2 and copy_board[y][x-3] == 2:#4
+                score += 1000
+                column_cord = y 
+                row_cord = x
+            
+            if copy_board[y][x] == 2 and copy_board[y][x-2] == 2 and copy_board[y][x-1] == 2 and copy_board[y][x+1] == 2:#4
+                score += 1000
+                column_cord = y 
+                row_cord = x
+            
+            if copy_board[y][x] == 2 and copy_board[y][x-1] == 2 and copy_board[y][x+1] == 2 and copy_board[y][x+2] == 2:#4
+                score += 1000
+                column_cord = y 
+                row_cord = x
+                
+        if x == 5:
+            #defending
+            if copy_board[y][x-3] == 1 and copy_board[y][x-2] == 1 and copy_board[y][x-1] == 1:
+                score += 500 
+                column_cord = y 
+                row_cord = x
+            if copy_board[y][x-2] == 1 and copy_board[y][x-1] == 1 and copy_board[y][x+1] == 1:
+                score += 500 
+                column_cord = y 
+                row_cord = x
+            
+            #attacking
+            if copy_board[y][x] == 2 and copy_board[y][x-1] == 2: #2 
+                score += 5 
+                column_cord = y 
+                row_cord = x
+            
+           
+            if copy_board[y][x] == 2 and copy_board[y][x+1] == 2: #2 
+                score += 5 
+                column_cord = y 
+                row_cord = x
+                
+            
+            if copy_board[y][x] == 2 and copy_board[y][x-1] == 2 and copy_board[y][x+1] == 2:#3
+                score += 25 
+                column_cord = y 
+                row_cord = x
+            
+            if copy_board[y][x] == 2 and copy_board[y][x-1] == 2 and copy_board[y][x-2] == 2:#3
+                score += 25 
+                column_cord = y 
+                row_cord = x    
+            
+            if copy_board[y][x] == 2 and copy_board[y][x+1] == 2 and copy_board[y][x-1] == 2 and copy_board[y][x-2] == 2:#4
+                score += 1000
+                column_cord = y 
+                row_cord = x  
+            
+            if copy_board[y][x] == 2 and copy_board[y][x-1] == 2 and copy_board[y][x-2] == 2 and copy_board[y][x-3] == 2:#4
+                score += 1000 
+                column_cord = y 
+                row_cord = x  
+            
+        if x == 6:
+            #defending
+            if copy_board[y][x-3] == 1 and copy_board[y][x-2] == 1 and copy_board[y][x-1] == 1:
+                score += 500 
+                column_cord = y 
+                row_cord = x
+            #attacking
+            if copy_board[y][x] == 2 and copy_board[y][x-1] == 2:#2
+                score += 5 
+                column_cord = y 
+                row_cord = x
+            
+            if copy_board[y][x] == 2 and copy_board[y][x-1] == 2 and copy_board[y][x-2] == 2:#3
+                score += 25 
+                column_cord = y 
+                row_cord = x
+            
+            if copy_board[y][x] == 2 and copy_board[y][x-1] == 2 and copy_board[y][x-2] == 2 and copy_board[y][x-3] == 2: #4 
+                score += 1000
+                column_cord = y 
+                row_cord = x
+        if y == 0:
+            if copy_board[y][x] == 2 and copy_board[y+1][x] == 2: #2
+                score += 5
+                column_cord = y 
+                row_cord = x
+            
+            if copy_board[y][x] == 2 and copy_board[y+1][x] == 2 and copy_board[y+2][x] == 2: #3
+                score += 25 
+                column_cord = y 
+                row_cord = x
+            
+            if copy_board[y][x] == 2 and copy_board[y+1][x] == 2 and copy_board[y+2][x] == 2 and copy_board[y+3][x] == 2: #4 
+                score += 1000
+                column_cord = y 
+                row_cord = x
+        
+        if y == 1:
+            if copy_board[y][x] == 2 and copy_board[y+1][x] == 2: #2
+                score += 5
+                column_cord = y 
+                row_cord = x
+            if copy_board[y][x] == 2 and copy_board[y+1][x] == 2 and copy_board[y+2][x] == 2: #3
+                score += 25 
+                column_cord = y 
+                row_cord = x
+            
+            if copy_board[y][x] == 2 and copy_board[y+1][x] == 2 and copy_board[y+2][x] == 2 and copy_board[y+3][x] == 2: #4 
+                score += 1000
+                column_cord = y 
+                row_cord = x
+            
+        
+        if y == 2:
+            
+            if copy_board[y][x] == 2 and copy_board[y+1][x] == 2: #2
+                score += 5
+                column_cord = y 
+                row_cord = x
+            if copy_board[y][x] == 2 and copy_board[y+1][x] == 2 and copy_board[y+2][x] == 2: #3
+                score += 25 
+                column_cord = y 
+                row_cord = x
+            
+            if copy_board[y][x] == 2 and copy_board[y+1][x] == 2 and copy_board[y+2][x] == 2 and copy_board[y+3][x] == 2: #4 
+                score += 1000
+                column_cord = y 
+                row_cord = x
+            
+        if y == 3:
+            if copy_board[y][x] == 2 and copy_board[y+1][x] == 2: #2
+                score += 5
+                column_cord = y 
+                row_cord = x
+            if copy_board[y][x] == 2 and copy_board[y+1][x] == 2 and copy_board[y+2][x] == 2: #3
+                score += 25 
+                column_cord = y 
+                row_cord = x
+        if y == 4:
+            if copy_board[y][x] == 2 and copy_board[y+1][x] == 2: #2
+                score += 5
+                column_cord = y 
+                row_cord = x
+        if y == 5:
+            score += 0 
+            column_cord = y 
+            row_cord = x
+            
+            
+            
+            
+            
+            
+            
+            
+            
+         
+            
+            
+       # for c in range(0,6): # 2 in a row (horizontal)
+        #    if copy_board[y][c] == 2 and copy_board[y][c+1] == 2 :
+         #       score +=25
+          #      column_cord = y 
+           #     row_cord = x
+            #    break
+        #for b in range(0,5): # 3 in a row (horizontal)
+         #   if copy_board[y][b] == 2 and copy_board[y][b+1] == 2 and copy_board[y][b+2] == 2:
+          #      score += 25
+           #     column_cord = y 
+            #    row_cord = x
+             #   break
+    
+        #for a in range(0,4):# 4 in a row (horizontal)
+         #   if copy_board[y][a] == 2 and copy_board[y][a+1] == 2 and copy_board[y][a+2] == 2  and copy_board[y][a+3] == 2:
+          #      score += 50
+           #     column_cord = y
+            #    row_cord = x
+             #   break
+       
+        #for f in range(0,5): # 2 in a row (verical)
+         #   if copy_board[f][x] == 2 and copy_board[f+1][x] == 2:
+          #      score += 25 
+           #     column_cord = y 
+            #    row_cord = x 
+             #   break
+        
+       # for e in range(0,4): # 3 in a row (vertical)
+        #    if copy_board[e][x] == 2 and copy_board[e+1][x] == 2 and copy_board[e+2][x] == 2:
+         #       score += 25
+          #      column_cord = y 
+           #     row_cord = x 
+            #    break
+        
+        #for d in range(0,3): # 4 in a row (vertical)
+        #    if copy_board[d][x] == 2 and copy_board[d+1][x] == 2 and copy_board[d+2][x] == 2 and copy_board[d+3][x] == 2:
+         #       score += 50
+          #      column_cord = y 
+           #     row_cord = x 
+            #    break
+        
+        for g in range(3,6): # 4 in a row horizontal ne 
+            for h in range(0,4):
+                if copy_board[g][h] == 2 and copy_board[g-1][h+1] == 2 and copy_board[g-2][h+2] == 2 and copy_board[g-3][h+3] == 2:
+                    score += 1000
                     column_cord = y 
-                    row_cord = x
-                break
-        for c in range(0,6): # 2 in a row (horizontal)
-            if copy_board[y][c] == 2 and copy_board[y][c+1] == 2 :
-                if score == 100 or score == 50:
-                    score = score
-                else:
-                    score=25
+                    row_cord = x 
+                    break
+       
+        for i in range(3,6): # 3 in a row horizonal ne 
+            for j in range(0,5):
+                if copy_board[i][j] == 2 and copy_board[i-1][j+1] == 2 and copy_board[i-2][j+2] == 2:
+                    score += 25 
                     column_cord = y 
-                    row_cord = x
+                    row_cord = x 
                     break
         
+        for k in range(3,6): # 2 in a row horizontal ne 
+            for l in range(0,6):
+                if copy_board[k][l] == 2 and copy_board[k-1][l+1] == 2:
+                    score += 5 
+                    column_cord = y 
+                    row_cord = x 
+                    break
+        
+        for m in range(3,6): # 4 in a row horizontal nw 
+            for n in range(3,7):
+                if copy_board[m][n] == 2 and copy_board[m-1][n-1] == 2 and copy_board[m-2][n-2] == 2 and copy_board[m-3][n-3] == 2:
+                    score += 1000
+                    column_cord = y 
+                    row_cord = x 
+                    break
+        
+        for m in range(3,6): # 3 in a row horizontal nw 
+            for n in range(3,6):
+                if copy_board[m][n] == 2 and copy_board[m-1][n-1] == 2 and copy_board[m-2][n-2] == 2:
+                    score += 25
+                    column_cord = y 
+                    row_cord = x 
+                    break
+        
+        for m in range(3,6): # 2 in a row horizontal nw 
+            for n in range(3,5):
+                if copy_board[m][n] == 2 and copy_board[m-1][n-1] == 2:
+                    score += 5
+                    column_cord = y 
+                    row_cord = x 
+                    break
+        
+        print(score)
         copy_board[y][x] = 0 
+        if copy_board[0][x] == 1 or copy_board[0][x] == 2:
+            score = 0 
         bestmove.append(column_cord)
         bestmove.append(row_cord)
         bestmove.append(score)
@@ -398,7 +812,7 @@ def scoring_position(gameboard,freespace):
     
     return bestmove
 
-def best_horizontal(horizontal_ai):
+def best_position(horizontal_ai):
     score_list=[]
     for i in horizontal_ai[2:21:3]:
         score_list.append(i)
@@ -419,12 +833,61 @@ def best_horizontal(horizontal_ai):
         pos_best = pos_best - 2
         return horizontal_ai[pos_best]
 
+def terminal(gameboard):
+    #win condition for player 1, wincondition for player 2 and gamedraw
+    #this is will need to return a true statement as the requirement
+    #has been met and estaliblished that this is a win 
+    pass
+    
+def minimax(gameboard, depth, maximizingplayer):
+    freespace1 = freespace(gameboard)
+    scoredmove = scoring_position(gameboard,freespace1) #returns a list of all the availble locations going [row] then [column] then the score for that position 
+    #is terminal where the game is finished 4 in a row met returns true
+    #win = terminal(gameboard) code for line above 
+    if depth == 0 or won:# won is true or false 
+        if won:
+            #if there is a 4 in a row for "2's" ai win therefore 
+            #return a high positive integer
+            
+            #if there is a 4 in a row for 1's player win therefore
+            #return a high negative integer
+            #use gamedraw function (an else statement) if draw
+            #returns 0 
+            pass
+        else: #depth is 0 and programm finishes working done nodes
+            #returns 
+            pass
+    
+    if maximizingplayer:
+        value = float('-inf')
+        #for x in valid locations: # code for checking for all the columns which are not full and can input a result.
+        for x,y in enumerate(freespace1):
+            copyboard1 = copy.deepcopy(gameboard)
+            copyboard1[y][x] = 2 
+            score = max(value,minimax(copyboard1, depth-1, False))
+        return score
+    
+    else: # this is the minimizing player 
+        value = float('inf')
+        for x,y in enumerate(freespace1):
+            copyboard1 = copy.deepcopy(gameboard)
+            copyboard1[y][x] = 1 
+            score = min(value,minimax(copyboard1, depth-1, True))
+        return score
+        
+    
+
+        
+            
+                
+            
+        pass
+        
+            
     
 "-------------------------------------------------------------------"
 
-def ai_input(gameboard):
-    options = [1,2,3,4,5,6,7]
-    return random.choice(options)
+
 
 """Main Fuction The Gameloop"""        
 def main():
@@ -449,8 +912,9 @@ def main():
         
         
         freepsace = freespace(gameboard)
-        horizontal_ai = scoring_position(gameboard,freepsace)
-        player_input2 = best_horizontal(horizontal_ai)
+        aiscoring = scoring_position(gameboard,freepsace)
+        print(aiscoring)
+        player_input2 = best_position(aiscoring)
         print("column:" , player_input2)
         #player_input2 = user_input2(gameboard)
         gameboard = board_updater2(player_input2,gameboard)

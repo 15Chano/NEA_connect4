@@ -2,8 +2,7 @@
 #git comment -m "comment"
 #git push -u origin maaster 
 import random
-import copy 
-import math 
+import copy  
 """Generates The Board"""
 def board(row):
     board1=[]

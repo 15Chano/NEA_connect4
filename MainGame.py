@@ -152,6 +152,73 @@ def board_updater2(player_input2,gameboard):
     return gameboard
 
 """checking For Win Condition"""
+def ai_win(gameboard):
+    def horizontal(gameboard):
+        for i in range(0,6): # i= row number h = placement in row i 
+            for h in range(0,4):
+                if gameboard[i][h] == 2 and gameboard[i][h+1] == 2 and gameboard[i][h+2] == 2 and gameboard[i][h+3] == 2:
+                    return 1
+    def verticle(gameboard):
+        for i in range(0,3):
+            for h in range(0,7):
+                if gameboard[i][h] == 2 and gameboard[i+1][h] == 2 and gameboard[i+2][h] == 2 and gameboard[i+3][h] == 2:
+                    return 1 
+    def diagonal_ne(gameboard): # i = row number h = placement in row i 
+        for i in range(3,6):
+            for h in range(0,4):
+                if gameboard[i][h] == 2 and gameboard[i-1][h+1] == 2 and gameboard[i-2][h+2] == 2 and gameboard[i-3][h+3] == 2:
+                    return 1 
+    def diagonal_nw(gameboard):
+        for i in range(3,6):
+            for h in range(3,7):
+                if gameboard[i][h] == 2 and gameboard[i-1][h-1] == 2 and gameboard[i-2][h-2] == 2 and gameboard[i-3][h-3] == 2:
+                    return 1 
+    test1 = horizontal(gameboard)
+    test2 = verticle(gameboard)
+    test3 = diagonal_ne(gameboard)
+    test4 = diagonal_nw(gameboard)
+    
+    if test1 == 1 or test2 == 1 or test3 == 1 or test4 == 1:
+        game = 2
+        return game
+    
+def player_win(gameboard):
+    def horizontal(gameboard):
+        for i in range(0,6): # i= row number h = placement in row i 
+            for h in range(0,4):
+                if gameboard[i][h] == 1  and gameboard[i][h+1] == 1 and gameboard[i][h+2] == 1 and gameboard[i][h+3] == 1:
+                    print("Player 1 Wins")
+                    return 1
+    def verticle(gameboard):
+        for i in range(0,3): # i=row number  h = placement in row i 
+            for h in range(0,7):
+                if gameboard[i][h] == 1 and gameboard[i+1][h] == 1 and gameboard[i+2][h] == 1 and gameboard[i+3][h] == 1:
+                    print("Player 1 Wins")
+                    return 1
+    def diagonal_ne(gameboard): # i = row number h = placement in row i 
+        for i in range(3,6):
+            for h in range(0,4):
+                if gameboard[i][h] == 1 and gameboard[i-1][h+1] == 1 and gameboard[i-2][h+2] == 1 and gameboard[i-3][h+3] == 1:
+                    print("Player 1 Wins")
+                    return 1 
+    def diagonal_nw(gameboard):
+        for i in range(3,6):
+            for h in range(3,7):
+                if gameboard[i][h] == 1 and gameboard[i-1][h-1] == 1 and gameboard[i-2][h-2] == 1 and gameboard[i-3][h-3] == 1:
+                    print("Player 1 Wins")
+                    return 1 
+    test1 = horizontal(gameboard)
+    test2 = verticle(gameboard)
+    test3 = diagonal_ne(gameboard)
+    test4 = diagonal_nw(gameboard)
+    
+    if test1 == 1 or test2 == 1 or test3 == 1 or test4 == 1:
+        game = 1
+        return game
+    
+                
+                
+    
 def win_condition_checker(gameboard):
     
     game = None
@@ -286,10 +353,11 @@ def freespace(gameboard):
     return freespace
 def freespace2(freespace):
     for x,y in enumerate(freespace):
+        pass
         
 def scoring_position(gameboard,freespace):
     copy_board = copy.deepcopy(gameboard)
-    printboard(copy_board)
+    #printboard(copy_board)
     
     
     score = 0
@@ -301,7 +369,7 @@ def scoring_position(gameboard,freespace):
         copy_board[y][x] = 2
         column_cord = y 
         row_cord = x 
-        print(y,x) 
+        #print(y,x) 
         
         #defending against diagonals 4 in a row ne
         if y < 3 and x > 2:
@@ -801,7 +869,7 @@ def scoring_position(gameboard,freespace):
                     row_cord = x 
                     break
         
-        print(score)
+        #print(score)
         copy_board[y][x] = 0 
         if copy_board[0][x] == 1 or copy_board[0][x] == 2:
             score = 0 
@@ -834,27 +902,35 @@ def best_position(horizontal_ai):
         return horizontal_ai[pos_best]
 
 def terminal(gameboard):
-    #win condition for player 1, wincondition for player 2 and gamedraw
-    #this is will need to return a true statement as the requirement
-    #has been met and estaliblished that this is a win 
-    pass
+    freespace = game_draw(gameboard)
+    return win_condition_checker(gameboard) or freespace == 42
+    
     
 def minimax(gameboard, depth, maximizingplayer):
     freespace1 = freespace(gameboard)
     scoredmove = scoring_position(gameboard,freespace1) #returns a list of all the availble locations going [row] then [column] then the score for that position 
     #is terminal where the game is finished 4 in a row met returns true
-    #win = terminal(gameboard) code for line above 
+    won = terminal(gameboard) 
     if depth == 0 or won:# won is true or false 
         if won:
+            aiwin = ai_win(gameboard)
+            playerwin = player_win(gameboard)
+            if aiwin == 2:
+                return 1000000000
             #if there is a 4 in a row for "2's" ai win therefore 
             #return a high positive integer
-            
+            if playerwin == 1:
+                return -100000000
+            else:
+                return 0 
             #if there is a 4 in a row for 1's player win therefore
             #return a high negative integer
             #use gamedraw function (an else statement) if draw
             #returns 0 
             pass
-        else: #depth is 0 and programm finishes working done nodes
+        else: #depth is 0 
+            
+            
             #returns 
             pass
     
@@ -865,7 +941,9 @@ def minimax(gameboard, depth, maximizingplayer):
             copyboard1 = copy.deepcopy(gameboard)
             copyboard1[y][x] = 2 
             score = max(value,minimax(copyboard1, depth-1, False))
-        return score
+            if score > value:
+                value = score
+        return value 
     
     else: # this is the minimizing player 
         value = float('inf')
@@ -873,7 +951,9 @@ def minimax(gameboard, depth, maximizingplayer):
             copyboard1 = copy.deepcopy(gameboard)
             copyboard1[y][x] = 1 
             score = min(value,minimax(copyboard1, depth-1, True))
-        return score
+            if score < value:
+                value = score
+        return value
         
     
 
@@ -913,9 +993,9 @@ def main():
         
         freepsace = freespace(gameboard)
         aiscoring = scoring_position(gameboard,freepsace)
-        print(aiscoring)
+        #print(aiscoring)
         player_input2 = best_position(aiscoring)
-        print("column:" , player_input2)
+        #print("column:" , player_input2)
         #player_input2 = user_input2(gameboard)
         gameboard = board_updater2(player_input2,gameboard)
         printboard(gameboard)

@@ -884,7 +884,7 @@ def best_position(horizontal_ai):
     for i in horizontal_ai[2:21:3]:
         score_list.append(i)
     score=max(score_list)
-    print("score:" , score)
+    #print("score:" , score)
     if score == 0:
         options = [0,1,2,3,4,5,6,]
         return random.choice(options)

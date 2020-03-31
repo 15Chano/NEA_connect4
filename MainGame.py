@@ -516,6 +516,7 @@ def scoring_position(gameboard,freespace):
                 row_cord = x
         
         if x == 3:
+            score += 5
             #defending
             if copy_board[y][x-3] == 1 and copy_board[y][x-2] == 1 and copy_board[y][x-1] == 1:
                 score += 500
@@ -759,7 +760,6 @@ def scoring_position(gameboard,freespace):
                 column_cord = y 
                 row_cord = x
         if y == 4:
-            score += 5
             if copy_board[y][x] == 2 and copy_board[y+1][x] == 2: #2
                 score += 5
                 column_cord = y 

@@ -759,6 +759,7 @@ def scoring_position(gameboard,freespace):
                 column_cord = y 
                 row_cord = x
         if y == 4:
+            score += 5
             if copy_board[y][x] == 2 and copy_board[y+1][x] == 2: #2
                 score += 5
                 column_cord = y 
